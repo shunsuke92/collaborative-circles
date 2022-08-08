@@ -1,0 +1,45 @@
+html {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  margin: inherit;
+  height: inherit;
+}
+
+.button-outer {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 70px;
+  height: 50px;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  background-color: #434343bb;
+  cursor: pointer;
+
+  appearance: none;
+}
+
+button:hover {
+  background-color: #535353bb;
+}
+
+.icon {
+  width: 18px;
+  fill: #ffffffbb;
+}
