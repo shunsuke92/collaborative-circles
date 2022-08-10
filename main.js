@@ -9,8 +9,6 @@ playIcon.style.cssText = 'display:none';
 const SMOOTH = 0.02; // 動きのなめらかさ（小さいほどなめらか）
 
 let circles = [];
-let px = 0;
-let py = 0;
 let isPlaying = true;
 
 class Circle {
@@ -20,9 +18,11 @@ class Circle {
     this.y = y;
     this.color = color;
     this.size = size;
-    this.activity = activity;
+    this.lowerActivity = -activity * 0.87;
+    this.upperActivity = activity;
     this.coordinationLevel = coordinationLevel;
     this.path = [{ x: x, y: y }];
+    this.seed = floor(random(100000));
   }
 
   // 現在地に円を描写する
@@ -70,12 +70,9 @@ class Circle {
 
   // 通常更新
   normalUpdate(id) {
-    const x = px + id / 100;
-    const y = py + id / 100;
-
-    noiseSeed(id);
-    this.x += map(noise(x, 0), 0, 1, -this.activity * 0.87, this.activity);
-    this.y += map(noise(0, y), 0, 1, -this.activity * 0.87, this.activity);
+    noiseSeed(this.seed);
+    this.x += map(this.noiseX(id), 0, 1, this.lowerActivity, this.upperActivity);
+    this.y += map(this.noiseY(id), 0, 1, this.lowerActivity, this.upperActivity);
   }
 
   // 協調更新（もう一方の円を考慮する）
@@ -84,42 +81,15 @@ class Circle {
 
     const rate = 1.3;
 
-    const x = px + id / 100;
-    const y = py + id / 100;
+    noiseSeed(this.seed);
 
-    noiseSeed(id);
+    const toRight = map(this.noiseX(id), 0, 1, this.lowerActivity, this.upperActivity * rate);
 
-    const toRight = map(
-      noise(x, 0),
-      0,
-      1,
-      -this.activity * 0.87,
-      this.activity * rate
-    );
+    const toLeft = map(this.noiseX(id), 0, 1, this.lowerActivity * rate, this.upperActivity);
 
-    const toLeft = map(
-      noise(x, 0),
-      0,
-      1,
-      -this.activity * 0.87 * rate,
-      this.activity
-    );
+    const toBottom = map(this.noiseY(id), 0, 1, this.lowerActivity, this.upperActivity * rate);
 
-    const toBottom = map(
-      noise(0, y),
-      0,
-      1,
-      -this.activity * 0.87,
-      this.activity * rate
-    );
-
-    const toTop = map(
-      noise(0, y),
-      0,
-      1,
-      -this.activity * 0.87 * rate,
-      this.activity
-    );
+    const toTop = map(this.noiseY(id), 0, 1, this.lowerActivity * rate, this.upperActivity);
 
     const onRight = this.coordinationLevel >= 0 ? toLeft : toRight;
     const onLeft = this.coordinationLevel >= 0 ? toRight : toLeft;
@@ -139,22 +109,35 @@ class Circle {
     }
   }
 
+  getStep(id) {
+    const noiseCycleShift = id;
+    return frameCount * SMOOTH + noiseCycleShift;
+  }
+
+  noiseX(id) {
+    return noise(this.getStep(id), 0);
+  }
+
+  noiseY(id) {
+    return noise(0, this.getStep(id));
+  }
+
   // ウィンドウからはみ出ないように位置を調整する
   check() {
     if (this.x + this.size >= width) {
-      this.x -= this.activity;
+      this.x -= this.upperActivity;
     }
 
     if (this.x - this.size <= 0) {
-      this.x += this.activity;
+      this.x += this.upperActivity;
     }
 
     if (this.y + this.size >= height) {
-      this.y -= this.activity;
+      this.y -= this.upperActivity;
     }
 
     if (this.y - this.size <= 0) {
-      this.y += this.activity;
+      this.y += this.upperActivity;
     }
   }
 
@@ -175,45 +158,42 @@ function setup() {
   const blue = color(190, 52, 68);
   const yellow = color(73, 25, 86);
   const size = 40;
-  const activity = 3;
-  const unconcern = null;
-  const approach = 2;
-  const leave = -5;
+  const activity = 2.5;
 
   circles = [
     // 無関心 vs 無関心 (like a "自由人")
-    new Circle('blue', x, y, blue, size, activity, unconcern),
-    new Circle('yellow', x, y, yellow, size, activity, unconcern),
+    new Circle('blue', x, y, blue, size, activity, null),
+    new Circle('yellow', x, y, yellow, size, activity, null),
   ];
 
   /* circles = [
     // 好き vs 好き (like a "相思相愛")
-    new Circle('blue', x, y, blue, size, activity, approach),
-    new Circle('yellow', x, y, yellow, size, activity, approach),
+    new Circle('blue', x, y, blue, size, activity, 1.5),
+    new Circle('yellow', x, y, yellow, size, activity, 1.5),
   ]; */
 
   /* circles = [
     // 嫌い vs 嫌い (like a "犬猿の仲")
-    new Circle('blue', x, y, blue, size, activity, leave),
-    new Circle('yellow', x, y, yellow, size, activity, leave),
+    new Circle('blue', x, y, blue, size, activity, -5),
+    new Circle('yellow', x, y, yellow, size, activity, -5),
   ]; */
 
   /* circles = [
     // 無関心 vs 好き (like a "来るもの拒まず")
-    new Circle('blue', x, y, blue, size, activity, unconcern),
-    new Circle('yellow', x, y, yellow, size, activity, approach),
+    new Circle('blue', x, y, blue, size, activity, null),
+    new Circle('yellow', x, y, yellow, size, activity, 2),
   ]; */
 
   /* circles = [
     // 無関心 vs 嫌い (like a "去るもの追わず")
-    new Circle('blue', x, y, blue, size, activity, unconcern),
-    new Circle('yellow', x, y, yellow, size, activity, leave),
+    new Circle('blue', x, y, blue, size, activity, null),
+    new Circle('yellow', x, y, yellow, size, activity, -2),
   ]; */
 
   /* circles = [
     // 好き vs 嫌い (like a "一方通行の愛情")
-    new Circle('blue', x, y, blue, size, activity, approach),
-    new Circle('yellow', x, y, yellow, size, activity, leave),
+    new Circle('blue', x, y, blue, size, activity, 2),
+    new Circle('yellow', x, y, yellow, size, activity, -2),
   ]; */
 }
 
@@ -239,8 +219,6 @@ function draw() {
     circles[i].check();
     circles[i].save();
   }
-  px += SMOOTH;
-  py += SMOOTH;
 }
 
 function startDrawPath() {
