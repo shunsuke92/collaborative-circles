@@ -203,37 +203,37 @@ function setup() {
   const activity = 2.5;
 
   circles = [
-    // 無関心 vs 無関心 (like a "自由人")
+    // 無関心 vs 無関心
     new Circle('blue', x, y, blue, size, activity, null),
     new Circle('yellow', x, y, yellow, size, activity, null),
   ];
 
   /* circles = [
-    // 好き vs 好き (like a "相思相愛")
+    // 好き vs 好き
     new Circle('blue', x, y, blue, size, activity, 1.5),
     new Circle('yellow', x, y, yellow, size, activity, 1.5),
   ]; */
 
   /* circles = [
-    // 嫌い vs 嫌い (like a "犬猿の仲")
+    // 嫌い vs 嫌い
     new Circle('blue', x, y, blue, size, activity, -5),
     new Circle('yellow', x, y, yellow, size, activity, -5),
   ]; */
 
   /* circles = [
-    // 無関心 vs 好き (like a "来るもの拒まず")
+    // 無関心 vs 好き
     new Circle('blue', x, y, blue, size, activity, null),
     new Circle('yellow', x, y, yellow, size, activity, 2),
   ]; */
 
   /* circles = [
-    // 無関心 vs 嫌い (like a "去るもの追わず")
+    // 無関心 vs 嫌い
     new Circle('blue', x, y, blue, size, activity, null),
     new Circle('yellow', x, y, yellow, size, activity, -2),
   ]; */
 
   /* circles = [
-    // 好き vs 嫌い (like a "一方通行の愛情")
+    // 好き vs 嫌い
     new Circle('blue', x, y, blue, size, activity, 2),
     new Circle('yellow', x, y, yellow, size, activity, -2),
   ]; */

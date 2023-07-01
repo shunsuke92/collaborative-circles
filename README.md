@@ -1,3 +1,1 @@
-# [perlin-circles](https://shuuu.jp/works/perlin-circles/)
-
-Random Circles with Perlin Noise
+Published [here](https://www.perlin-circles.shunsuke92.com/).
