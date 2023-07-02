@@ -1,1 +1,1 @@
-Published [here](https://www.perlin-circles.shunsuke92.com/).
+Published [here](https://www.collaborative-circles.shunsuke92.com/).

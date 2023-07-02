@@ -13,11 +13,12 @@ let circles = [];
 let isPlaying = true;
 
 class Circle {
-  constructor(name, x, y, color, size, activity, coordinationLevel) {
+  constructor(name, x, y, strokeColor, fillColor, size, activity, coordinationLevel) {
     this.name = name;
     this.x = x;
     this.y = y;
-    this.color = color;
+    this.strokeColor = strokeColor;
+    this.fillColor = fillColor;
     this.size = size;
     this.lowerActivity = -activity * 0.87;
     this.upperActivity = activity;
@@ -28,9 +29,9 @@ class Circle {
 
   // 現在地に円を描写する
   drawCircle() {
-    stroke(this.color);
+    stroke(this.strokeColor);
     strokeWeight(LINE_WEIGHT);
-    noFill();
+    fill(this.fillColor);
     circle(this.x, this.y, this.size * 2);
   }
 
@@ -49,7 +50,7 @@ class Circle {
 
     // 軌道
     push();
-    stroke(this.color);
+    stroke(this.strokeColor);
     strokeWeight(2);
     noFill();
     beginShape();
@@ -64,7 +65,7 @@ class Circle {
     // 終点
     push();
     noStroke();
-    fill(this.color);
+    fill(this.strokeColor);
     circle(endPoint.x, endPoint.y, 8);
     pop();
   }
@@ -198,21 +199,23 @@ function setup() {
   const x = width / 2;
   const y = height / 2;
   const blue = color(190, 52, 68);
+  const blueTransparent = color(190, 52, 68, 0.05);
   const yellow = color(73, 25, 86);
+  const yellowTransparent= color(73, 25, 86, 0.04);
   const size = 40;
   const activity = 2.5;
 
-  circles = [
+  /* circles = [
     // 無関心 vs 無関心
     new Circle('blue', x, y, blue, size, activity, null),
     new Circle('yellow', x, y, yellow, size, activity, null),
-  ];
-
-  /* circles = [
-    // 好き vs 好き
-    new Circle('blue', x, y, blue, size, activity, 1.5),
-    new Circle('yellow', x, y, yellow, size, activity, 1.5),
   ]; */
+
+  circles = [
+    // 好き vs 好き
+    new Circle('blue', x, y, blue, blueTransparent, size, activity, 2.5),
+    new Circle('yellow', x, y, yellow, yellowTransparent, size, activity, 2.5),
+  ];
 
   /* circles = [
     // 嫌い vs 嫌い
